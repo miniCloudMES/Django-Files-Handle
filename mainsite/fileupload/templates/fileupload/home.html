@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Home</title>
+
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}" type="text/css">
+</head>
+<body>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-6">
+                <h4>Upload file with Model</h4>
+                <form action="{% url 'fileupload:savetomodel' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ icon_form }}
+                    <input class="form-control btn btn-warning" type="submit" value="Upload">
+                </form>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+            <br><hr>
+        <div class="row">
+            {% for icon in icons %}
+                <div class="col-4">
+                    <div class="card mt-3" style="width: 18rem;">
+                        <img src="{{ icon.IconImage.url }}" class="card-img-top" alt="{{ icon.Title }}" style="height: 200px;">
+                        <div class="card-body">
+                            <p class="card-text">{{ icon.Title }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <br><hr>
+        <div class="row">
+            <div class="col-6">
+                <h4>Upload file to Folder</h4>
+                <form action="{% url 'fileupload:home' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ upload_form }}
+                    <input class="form-control btn btn-warning" type="submit" value="Upload">
+                </form>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+            <br><hr>
+        <div class="row">
+            {% for image in images_list %}
+            <div class="col-4">
+                <img src="{{ image }}" style="height: 200px; width: 350px" class="mt-3">
+            </div>
+            {% endfor %}
+        </div>
+        <br><hr>
+        <div>
+            <h4>This is the footer.</h4>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+    </script>
+
+    <script>
+    function ShowName() {
+        var filename = document.getElementById("upload_icon").files[0].name;
+        document.getElementById("title").value = filename.split(".")[0];
+    }
+    </script>
+</body>
+</html>
