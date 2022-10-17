@@ -5,7 +5,7 @@ from os.path import join, isfile, isdir
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from mainsite.settings import MEDIA_KEY_PREFIX
+from mainsite.settings import MEDIA_KEY_PREFIX, MEDIA_ROOT, MEDIA_URL
 from .forms import UploadFileForm, UploadIconModelForm
 from .models import UploadIcons
 
@@ -22,14 +22,8 @@ def home(request):
             # 避免相同檔名覆蓋
             new_file_name = now_time.strftime('%Y%m%d_%H%M%S_' + receive_file.name)
             print('File Name is %s' % new_file_name)
-            path_file = MEDIA_KEY_PREFIX + 'upload/'
+            path_file = MEDIA_ROOT + '/upload/'
             print('Path: %s' % path_file)
-
-            if os.path.exists(path_file.strip().replace('?', '')):
-                print('***目錄已存在')
-            else:
-                os.makedirs(path_file.strip().replace('?', ''))
-                print('***目錄不存在，建立目錄')
 
             with open(path_file + new_file_name, 'wb+') as file_save_to:
                 for chunk in receive_file.chunks():
@@ -37,7 +31,7 @@ def home(request):
 
         return redirect(reverse('fileupload:home'))
 
-    upload_path = MEDIA_KEY_PREFIX + 'upload/'
+    upload_path = MEDIA_ROOT + '/upload/'
     print('Path: %s' % upload_path)
 
     if os.path.exists(upload_path.strip().replace('?', '')):
@@ -45,17 +39,20 @@ def home(request):
     else:
         os.makedirs(upload_path.strip().replace('?', ''))
         print('***目錄不存在，建立目錄')
+
     # 取得所有檔案與子目錄名稱
     files = os.listdir(upload_path)
     print('The files in the folder: %s' % files)
+
     # 以迴圈處理
+    image_path = MEDIA_URL + 'upload/'
     images_list = []
     for file in files:
         # 產生檔案的絕對路徑
         fullpath = join(upload_path, file)
         # 判斷 fullpath 是檔案還是目錄
         if isfile(fullpath):
-            images_list.append(fullpath)
+            images_list.append(image_path + file)
             print("檔案:", file, " 路徑：", fullpath)
         elif isdir(fullpath):
             print("目錄：", file)

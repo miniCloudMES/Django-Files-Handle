@@ -22,9 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nts-y=st30wcdz^(wr_zcy_s@_01=tx-yg-bonf0s&(do6hf^-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -77,8 +78,15 @@ WSGI_APPLICATION = 'mainsite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # 以下使用 mysql.connector.django 鏈接pythonanywhere MySQL伺服器
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'karolin4949$demo',
+        'USER': 'karolin4949',
+        'PASSWORD': 'player123456',
+        'HOST': 'karolin4949.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
@@ -125,7 +133,7 @@ STATICFILES_DIRS = [
 # 以下是媒體上傳存放路徑
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_KEY_PREFIX = 'media/'
+MEDIA_KEY_PREFIX = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
