@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nts-y=st30wcdz^(wr_zcy_s@_01=tx-yg-bonf0s&(do6hf^-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -39,6 +39,9 @@ INSTALLED_APPS = [
 
     # My App
     'fileupload',
+
+    # Third Part App
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +142,7 @@ MEDIA_KEY_PREFIX = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
+
