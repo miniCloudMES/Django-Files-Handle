@@ -7,6 +7,7 @@ from captcha.models import CaptchaStore
 from django.conf import settings
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -30,6 +31,7 @@ def home(request):
                 obj.delete()
                 message = "圖片 [%s] 已被刪除." % image_title
                 print(message)
+                return HttpResponseRedirect(reverse('fileupload:home'))
             except Exception as e:
                 message = 'Can not fine the image ! <br> %s' % e
         elif action == 'del_file':
@@ -38,6 +40,7 @@ def home(request):
             full_path = join(folder, file_name)
             os.remove(full_path)
             print('%s had been remove.' % file_name)
+            return HttpResponseRedirect(reverse('fileupload:home'))
 
 
     if request.method == 'POST':
