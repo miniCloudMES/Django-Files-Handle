@@ -13,6 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
+
 <div class="container mt-3">
     <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-12 mb-30">
@@ -99,6 +100,7 @@
                     <p>Photo:{{forloop.counter}}</p>
                     <a class="btn btn-danger" href="{% url 'fileupload:home' %}?do=del_file&file={{ image.file }}" role="button">Del</a>
                 </div>
+
             </div>
         </div>
         <!-- Modal -->
@@ -141,6 +143,7 @@
 
 </script>
 
+
 <script>
 $('img.captcha').click(function(){
     $.getJSON('/captcha/refresh/',function(json)
@@ -150,7 +153,6 @@ $('img.captcha').click(function(){
         $("#id_captcha_0").val(json.key); });
     return false;
     });
-
 </script>
 </body>
 </html>

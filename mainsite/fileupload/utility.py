@@ -16,6 +16,7 @@ __author__ = 'Karo Lin'
 import uuid
 import os
 
+
 # Use uuid as file name.
 from io import BytesIO
 
@@ -57,4 +58,6 @@ def make_thumbnail(image, file_name, size=(500, 500)):
     thumb_io = BytesIO()  # create a BytesIO object
     pilImage.save(thumb_io, 'JPEG', quality=85)  # save image to BytesIO object
     thumbnail = File(thumb_io, name=file_name)  # create a django friendly File object
+
     return thumbnail
+

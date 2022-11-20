@@ -21,6 +21,7 @@ def home(request):
         if action == 'del':
             try:
                 image_id = request.GET.get('id')
+
                 # print('id: %s' % image_id)
                 obj = UploadIcons.objects.get(pk=image_id)
                 # print(obj)
@@ -37,6 +38,7 @@ def home(request):
             full_path = join(folder, file_name)
             os.remove(full_path)
             print('%s had been remove.' % file_name)
+
 
     if request.method == 'POST':
         receive_form = UploadFileForm(request.POST, request.FILES)
@@ -80,7 +82,9 @@ def home(request):
         fullpath = join(upload_path, file)
         # 判斷 fullpath 是檔案還是目錄
         if isfile(fullpath):
+
             images_list.append({'file': file, 'path': image_path + file})
+
             # print("檔案:", file, " 路徑：", fullpath)
         elif isdir(fullpath):
             print("目錄：", file)
@@ -97,6 +101,7 @@ def savetomodel(request):
         # print(icon_title)
         capt = request.POST.get("captcha_1", None)  # User Key In
         key = request.POST.get("captcha_0", None)  # Database store
+
         if check_captcha(capt, key):
 
             # Reduce image size
@@ -123,6 +128,7 @@ def savetomodel(request):
                 # print('Save')
                 new_image.save()
                 print('圖片 [%s] 已上傳。' % icon_title)
+
             except Exception as e:
                 print('The erro: %s' % e)
 
@@ -164,7 +170,9 @@ def pre_save_image(sender, instance, *args, **kwargs):
 
 
 # 確認驗證碼
+
 def check_captcha(captchaStr, captchaHashkey):
+
     if captchaStr and captchaHashkey:
         try:
             # 依據 hashkey 獲取response值

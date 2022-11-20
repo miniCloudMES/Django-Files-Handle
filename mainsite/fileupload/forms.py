@@ -26,6 +26,7 @@ class UploadFileForm(forms.Form):
                                    attrs={'class': 'form-control', 'accept': 'image/gif,image/jpeg, image/png'}
                                                 )
                                 )
+
                            )
 
 
