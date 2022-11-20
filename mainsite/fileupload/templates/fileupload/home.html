@@ -4,72 +4,153 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Upload Home</title>
-
     {% load static %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'fileupload/css/style.css' %}" type="text/css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-6">
-                <h4>Upload file with Model</h4>
-                <form action="{% url 'fileupload:savetomodel' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ icon_form }}
-                    <input class="form-control btn btn-warning" type="submit" value="Upload">
-                </form>
-            </div>
-            <div class="col-6">
-            </div>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+            <h4>Upload file with Model</h4>
+            <form action="{% url 'fileupload:savetomodel' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ icon_form }}
+                <p class="text-danger">{{ captcha_message }}</p>
+                <input class="form-control btn btn-warning mt-3" type="submit" value="Upload">
+            </form>
+            <span>{{ message | safe }}</span>
         </div>
-            <br><hr>
-        <div class="row">
-            {% for icon in icons %}
-                <div class="col-4">
-                    <div class="card mt-3" style="width: 18rem;">
-                        <img src="{{ icon.IconImage.url }}" class="card-img-top" alt="{{ icon.Title }}" style="height: 200px;">
-                        <div class="card-body">
-                            <p class="card-text">{{ icon.Title }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <br><hr>
-        <div class="row">
-            <div class="col-6">
-                <h4>Upload file to Folder</h4>
-                <form action="{% url 'fileupload:home' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ upload_form }}
-                    <input class="form-control btn btn-warning" type="submit" value="Upload">
-                </form>
-            </div>
-            <div class="col-6">
-            </div>
-        </div>
-            <br><hr>
-        <div class="row">
-            {% for image in images_list %}
-            <div class="col-4">
-                <img src="{{ image }}" style="height: 200px; width: 350px" class="mt-3">
-            </div>
-            {% endfor %}
-        </div>
-        <br><hr>
-        <div>
-            <h4>This is the footer.</h4>
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-30">
+            <a href="https://minimes.pythonanywhere.com" target="_blank">
+                <img src="{% static 'fileupload/images/MES Logo.png' %}" alt="Logo" style="height:150px">
+            </a>
+            <h4>Django Image upload with Model Field.</h4>
+            <h4>Django 使用影像模組上傳圖片介紹。</h4>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
-    </script>
+    <br>
+    <hr>
+    <div class="row">
+        {% for icon in icons %}
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-30">
+            <div class="card mt-3">
+                <!-- Button trigger modal -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ icon.id }}">
+                    <img src="{{ icon.IconImage.url }}" class="card-img-top" alt="{{ icon.Title }}"
+                         style="height: 200px;">
+                </a>
+                <div class="card-body">
+                    <p class="card-text">{{ icon.Title }}</p>
+                    <a class="btn btn-danger" href="{% url 'fileupload:home' %}?do=del&id={{ icon.id }}" role="button">Del</a>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal{{ icon.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ icon.Title }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ icon.IconImage.url }}" alt="{{ icon.Title }}" style="width:100%">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+    <hr>
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-30">
+            <h4>Upload file to Folder</h4>
+            <form action="{% url 'fileupload:home' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ upload_form }}
+                <input class="form-control btn btn-warning" type="submit" value="Upload">
+            </form>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <br>
+    <hr>
+    <div class="row">
+        {% for image in images_list %}
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-30">
+            <div class="card mt-3">
+                <!-- Button trigger modal -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ forloop.counter }}">
+                    <img src="{{ image.path }}" class="card-img-top" alt="image"
+                         style="height: 200px;">
+                </a>
+                <div class="card-body">
+                    <p>Photo:{{forloop.counter}}</p>
+                    <a class="btn btn-danger" href="{% url 'fileupload:home' %}?do=del_file&file={{ image.file }}" role="button">Del</a>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="ModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="ModalLabel">Photo{{ forloop.counter }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ image.path }}" alt="Image" style="width:100%">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script>
+        {% endfor %}
+    </div>
+
+    <br>
+    <hr>
+    <div>
+        <h4>This is the footer.</h4>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous">
+</script>
+
+<script>
     function ShowName() {
         var filename = document.getElementById("upload_icon").files[0].name;
         document.getElementById("title").value = filename.split(".")[0];
     }
-    </script>
+
+</script>
+
+<script>
+$('img.captcha').click(function(){
+    $.getJSON('/captcha/refresh/',function(json)
+        {
+        // This should update your captcha image src and captcha hidden input console.log(json);
+        $("img.captcha").attr("src",json.image_url);
+        $("#id_captcha_0").val(json.key); });
+    return false;
+    });
+
+</script>
 </body>
 </html>
