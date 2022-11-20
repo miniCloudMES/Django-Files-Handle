@@ -21,16 +21,24 @@ def home(request):
         if action == 'del':
             try:
                 image_id = request.GET.get('id')
-                print('id: %s' % image_id)
+
+                # print('id: %s' % image_id)
                 obj = UploadIcons.objects.get(pk=image_id)
-                print(obj)
+                # print(obj)
                 image_title = obj.Title
-                print(image_title)
+                # print(image_title)
                 obj.delete()
-                message = "Image %s had been remove." % image_title
+                message = "圖片 [%s] 已被刪除." % image_title
                 print(message)
             except Exception as e:
                 message = 'Can not fine the image ! <br> %s' % e
+        elif action == 'del_file':
+            file_name = request.GET.get('file')
+            folder = settings.MEDIA_ROOT + '/upload/'
+            full_path = join(folder, file_name)
+            os.remove(full_path)
+            print('%s had been remove.' % file_name)
+
 
     if request.method == 'POST':
         receive_form = UploadFileForm(request.POST, request.FILES)
@@ -56,7 +64,8 @@ def home(request):
     # print('Path: %s' % upload_path)
 
     if os.path.exists(upload_path.strip().replace('?', '')):
-        print('***目錄已存在')
+        # print('***目錄已存在')
+        pass
     else:
         os.makedirs(upload_path.strip().replace('?', ''))
         print('***目錄不存在，建立目錄')
@@ -73,7 +82,9 @@ def home(request):
         fullpath = join(upload_path, file)
         # 判斷 fullpath 是檔案還是目錄
         if isfile(fullpath):
-            images_list.append(image_path + file)
+
+            images_list.append({'file': file, 'path': image_path + file})
+
             # print("檔案:", file, " 路徑：", fullpath)
         elif isdir(fullpath):
             print("目錄：", file)
@@ -90,7 +101,9 @@ def savetomodel(request):
         # print(icon_title)
         capt = request.POST.get("captcha_1", None)  # User Key In
         key = request.POST.get("captcha_0", None)  # Database store
-        if jarge_captcha(capt, key):
+
+        if check_captcha(capt, key):
+
             # Reduce image size
             post_image = request.FILES.get('IconImage')
             print(post_image)
@@ -114,6 +127,8 @@ def savetomodel(request):
                 new_image.IconImage = image
                 # print('Save')
                 new_image.save()
+                print('圖片 [%s] 已上傳。' % icon_title)
+
             except Exception as e:
                 print('The erro: %s' % e)
 
@@ -155,7 +170,9 @@ def pre_save_image(sender, instance, *args, **kwargs):
 
 
 # 確認驗證碼
-def jarge_captcha(captchaStr, captchaHashkey):
+
+def check_captcha(captchaStr, captchaHashkey):
+
     if captchaStr and captchaHashkey:
         try:
             # 依據 hashkey 獲取response值

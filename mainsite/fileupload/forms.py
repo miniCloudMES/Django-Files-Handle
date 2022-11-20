@@ -24,8 +24,9 @@ class UploadFileForm(forms.Form):
                            widget=(
                                forms.FileInput(
                                    attrs={'class': 'form-control', 'accept': 'image/gif,image/jpeg, image/png'}
-                               )
-                           )
+                                                )
+                                )
+
                            )
 
 

@@ -29,6 +29,7 @@ def get_file_path(instance, filename):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('icons', filename)
 
+
 # 壓縮並旋轉Icon檔案，使得方向正確以及避免伺服器空間耗盡。(ImageField use only)
 def make_thumbnail(image, file_name, size=(500, 500)):
     """Makes thumbnails of given size from given image"""
@@ -57,4 +58,6 @@ def make_thumbnail(image, file_name, size=(500, 500)):
     thumb_io = BytesIO()  # create a BytesIO object
     pilImage.save(thumb_io, 'JPEG', quality=85)  # save image to BytesIO object
     thumbnail = File(thumb_io, name=file_name)  # create a django friendly File object
+
     return thumbnail
+
