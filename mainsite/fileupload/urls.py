@@ -21,4 +21,5 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('savetomodel', views.savetomodel, name='savetomodel'),
+    path('<int:image_id>/update/', views.update, name='update'),
 ]

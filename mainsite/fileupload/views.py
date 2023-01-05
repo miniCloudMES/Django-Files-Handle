@@ -8,7 +8,7 @@ from django.conf import settings
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .forms import UploadFileForm, UploadIconModelForm
@@ -52,7 +52,7 @@ def home(request):
             # print('The size of file is %d bytes' % receive_file.size)
             now_time = datetime.datetime.now()
             # 避免相同檔名覆蓋
-            new_file_name = now_time.strftime('%Y%m%d_%H%M%S_' + receive_file.name)
+            new_file_name = now_time.strftime('%Y%m%d_%H%M%S'+'.jpg')
             # print('File Name is %s' % new_file_name)
             path_file = settings.MEDIA_ROOT + '/upload/'
             # print('Path: %s' % path_file)
@@ -143,6 +143,23 @@ def savetomodel(request):
             captcha_message = 'Wrong Captcha ! 驗證碼錯誤！'
             return render(request, 'fileupload/home.html', locals())
 
+def update(request, image_id):
+    print('Update Image ID:', image_id)
+    pick_data = get_object_or_404(UploadIcons, pk=image_id)
+    title = request.POST.get('update_title')
+    image_file = request.FILES.get('update_image')
+    print("File Object:", image_file)
+    pick_data.Title = title
+    if image_file != None:
+        pick_data.IconImage = image_file
+    else:
+        pass
+    # print(image_id)
+    # print(title)
+    # print(image_file)
+    print('Update Image: %s' % pick_data.Title)
+    pick_data.save()
+    return HttpResponseRedirect(reverse('fileupload:home'))
 
 # 刪除使用 FileField 或是 ImageField 儲存的檔案
 @receiver(post_delete, sender=UploadIcons)
