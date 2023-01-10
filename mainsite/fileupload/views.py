@@ -64,7 +64,7 @@ def home(request):
                 file_string.write(part)
                 file_string.flush()
 
-            file_name = receive_file.name
+            # origin_file_name = receive_file.name
             image_file = make_thumbnail(file_string, file_name, size=(800, 800))
             fs = FileSystemStorage()
             file = fs.save(path_file + new_file_name, image_file)
