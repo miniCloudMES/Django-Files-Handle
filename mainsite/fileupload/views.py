@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.core.files.storage import FileSystemStorage
 
 from .forms import UploadFileForm, UploadIconModelForm
 from .models import UploadIcons
@@ -51,15 +52,22 @@ def home(request):
             # print(type(receive_file))
             # print('The size of file is %d bytes' % receive_file.size)
             now_time = datetime.datetime.now()
-            # 避免相同檔名覆蓋
+            # 避免相同檔名覆蓋以時間命名
             new_file_name = now_time.strftime('%Y%m%d_%H%M%S'+'.jpg')
             # print('File Name is %s' % new_file_name)
             path_file = settings.MEDIA_ROOT + '/upload/'
             # print('Path: %s' % path_file)
 
-            with open(path_file + new_file_name, 'wb+') as file_save_to:
-                for chunk in receive_file.chunks():
-                    file_save_to.write(chunk)
+            # 將上傳的資料儲存於記憶體
+            file_string = BytesIO()
+            for part in receive_file.chunks():  
+                file_string.write(part)
+                file_string.flush()
+
+            file_name = receive_file.name
+            image_file = make_thumbnail(file_string, file_name, size=(800, 800))
+            fs = FileSystemStorage()
+            file = fs.save(path_file + new_file_name, image_file)
 
         return redirect(reverse('fileupload:home'))
 
@@ -77,7 +85,7 @@ def home(request):
     files = os.listdir(upload_path)
     # print('The files in the folder: %s' % files)
 
-    # 以迴圈處理
+    # 以迴圈處理建立圖片資料清單
     image_path = settings.MEDIA_URL + 'upload/'
     images_list = []
     for file in files:
@@ -85,12 +93,11 @@ def home(request):
         fullpath = join(upload_path, file)
         # 判斷 fullpath 是檔案還是目錄
         if isfile(fullpath):
-
             images_list.append({'file': file, 'path': image_path + file})
-
             # print("檔案:", file, " 路徑：", fullpath)
         elif isdir(fullpath):
             print("目錄：", file)
+
     icons = UploadIcons.objects.all()
     upload_form = UploadFileForm
     icon_form = UploadIconModelForm
@@ -110,8 +117,10 @@ def savetomodel(request):
             # Reduce image size
             post_image = request.FILES.get('IconImage')
             print(post_image)
+
+            # 將上傳的資料儲存於記憶體
             file_string = BytesIO()
-            for part in post_image.chunks():  # 將上傳的資料儲存於記憶體
+            for part in post_image.chunks():  
                 file_string.write(part)
                 file_string.flush()
 

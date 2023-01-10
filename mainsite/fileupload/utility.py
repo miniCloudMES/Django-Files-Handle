@@ -61,3 +61,4 @@ def make_thumbnail(image, file_name, size=(500, 500)):
 
     return thumbnail
 
+
