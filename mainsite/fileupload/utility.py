@@ -16,14 +16,11 @@ __author__ = 'Karo Lin'
 import uuid
 import os
 
-
-# Use uuid as file name.
 from io import BytesIO
-
 from PIL import Image, ExifTags
 from django.core.files import File
 
-
+# Use uuid as file name.
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
